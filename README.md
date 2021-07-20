@@ -1,5 +1,5 @@
 # HW 5: Implement an Interactive Network
-You are going to write a visualization capable of representing node-link data. These data sets correspond to the contacts and friendship relations between students in a high school in Marseilles, France, in December 2013, as measured through several techniques.
+You are going to write a visualization capable of representing node-link data. These datasets correspond to the contacts and friendship relations between students in a high school in Marseilles, France, in December 2013, as measured through several techniques.
 
 ## Preliminary Data Files:
 * **Contact-diaries-network_data_2013.csv [5KB]:** This dataset corresponds to the directed network of contacts between students as reported in contact diaries collected at the end of the fourth day of the data collection. Each line has the form “i j w”, meaning that student i reported contacts with student j of aggregate durations of: 
@@ -10,7 +10,7 @@ You are going to write a visualization capable of representing node-link data. T
 * **Friendship-network_data_2013.csv [6KB]:** This dataset corresponds to the directed network of reported friendships. Each line has the form “i j”, meaning that student i reported a friendship with student j.
 * **metadata_2013.csv [4KB]:** This dataset contains a tab-separated list in which each line of the form “i Ci Gi” gives class Ci and gender Gi of the person having ID i. The original dataset has been augmented with gendered and gender-neutral names from [HomePage]( [https://homepage.net/name_generator/) to make them a little easier to remember and distinguish.
 
-In this tutorial, we will only be using two of the data sets. The third is included in case you want to have a little fun with it and explore.
+In this tutorial, we will only be using two of the datasets. The third is included in case you want to have a little fun with it and explore.
 
 ## Prepare the Data:
 
@@ -90,7 +90,7 @@ Which would output:
 ]
 ```
 
-We see few more males in the sample than females but not a terribly unbalanced data set. There are also some "Unknown" members, which we might need to think about if we are going to be using this attribute later for a visual channel. 
+We see few more males in the sample than females but not a terribly unbalanced dataset. There are also some "Unknown" members, which we might need to think about if we are going to be using this attribute later for a visual channel. 
 
 To get our data working in the force-directed layout, however, we are going to need to get our data into a different format (see example below from *Interactive Data Visualization for the Web, 2nd Ed.*):
 
