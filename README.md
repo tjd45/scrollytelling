@@ -1,7 +1,7 @@
-# HW 5: Arrange Network and Tree
+# HW 5: Implement an Interactive Network
 You are going to write a visualization capable of representing node-link data. These data sets correspond to the contacts and friendship relations between students in a high school in Marseilles, France, in December 2013, as measured through several techniques.
 
-## Preliminary DataFiles:
+## Preliminary Data Files:
 * **Contact-diaries-network_data_2013.csv [5KB]:** This dataset corresponds to the directed network of contacts between students as reported in contact diaries collected at the end of the fourth day of the data collection. Each line has the form “i j w”, meaning that student i reported contacts with student j of aggregate durations of: 
   1. at most 5 min if w = 1
   1. between 5 and 15 min if w = 2 
@@ -12,7 +12,7 @@ You are going to write a visualization capable of representing node-link data. T
 
 In this tutorial, we will only be using two of the data sets. The third is included in case you want to have a little fun with it and explore.
 
-## Prepare the Data
+## Prepare the Data:
 
 Let's start by importing [D3 JS](https://d3js.org/). As with the previous homework, we are also updating to the most recent version of D3 - v6 - so you can expect some changes from the previous homework and from the book. Having said that, much of what we will be doing in this homework closely follows the material in Chapter 13 with some updates for new syntax.
 
@@ -214,7 +214,7 @@ let dataset = {
 }
 ```
 
-## Defining the Force Simulation
+## Defining the Force Simulation:
 
 Now that we have the basic data structure in place, we need to initialize the force simulation layout. To start, we place some initial setup code inside our script to prepare the `svg` element we will be using.
 
@@ -313,7 +313,7 @@ nodeMarks.selectAll("circle").append("title")
 
 You should have a legible layout. At this point, if you like, you should feel free to play with the parameters here - what happens if you change the node radius, for instance? What if you assigned three different colors based on the gender or class of the student? What if you added a collision force, to keep the circles from overlapping? 
 
-## Add Interactivity
+## Add Interactivity:
 
 You may notice that, thanks to our centering force, most of the nodes wind up close to the middle of the layout. Many others get pushed away because they are not connected to anyone. Regardless, once the simulation stabilizes, many of the nodes may not quite be where we want them to be. But, we are stuck! We want to be able to drag them around, zoom in and out, and move around the visible area to explore the data.
 
@@ -407,7 +407,7 @@ Remember when I said that putting the elements inside `g` containers in the `svg
 
 Getting zoom to work gets us panning for free. They are both part of the [zoom behavior](https://github.com/d3/d3-zoom/blob/v2.0.0/README.md#zoom) in `d3-zoom`. Sweet!
 
-## Prepare a Tree
+## Prepare a Tree:
 
 Our node-link diagram does some things quite well! We can definitely see where the clusters are located, and who might be the important members of this network. It is easy to follow paths.
 
@@ -503,7 +503,7 @@ Testing this out for Katherine Smith, our first data item, yields a tree with he
 
 ![tree](assets/images/tree.png)
 
-## Arrange a Tree
+## Arrange a Tree:
 
 We have a tree layout created, now let's take this to the DOM so that we can see it. We need to figure out just how large the range for our tree x positions is going to be. We are going to be working through the children in the root selection, finding the minimum and maximum x. Place this directly below the original `svg` declaration.
 
@@ -591,7 +591,7 @@ node.append("text")
 ```
 ![tidy tree](assets/images/tidy_color.png)
 
-## Add Interactivity
+## Add Interactivity:
 
 With a little work, our tree could support a wide range of possible interaction options. [Expanding and collapsing](https://bl.ocks.org/d3noob/8375092) and [layout switching](https://bl.ocks.org/mbostock/e9ba78a2c1070980d1b530800ce7fa2b) are common, while simple interactions such as zoom are possible with the viewport that we added earlier. We are going to keep it relatively simple, and enhance the connection between our nodes in the tree diagram and our nodes in the force-directed network.
 
@@ -728,7 +728,7 @@ nodeMarks.selectAll("circle")
 
 There are so many possible directions to go from here. When you highlight a node in the tree, for example, would you highlight its children, and their children, and so on? Do you coordinate the highlighting so that you can see everything reachable from a given node in the force-link diagram? Would you use click instead of hover to allow the user to arbitrarily create a set of clicked nodes and explore them? By this point, you hopefully have some things that you might want to try, or potentially some ideas for your other projects. Best of luck!
 
-## Where to go from Here
+## Where to go from Here:
 
 For full credit on this assignment, you will need to complete the tutorial, then take some additional steps to make this visualization your own:
 
@@ -743,7 +743,7 @@ For example, in the image below, the colors have been assigned using the class e
 
 ![extra credit](assets/images/extra_credit.png)
 
-### Acknowledgements
+### Acknowledgements:
 - Force arrangement adapted from https://observablehq.com/@borowski-9ld/d3-force-directed-graph
 - Colors from http://colorizer.org/ and https://colorbrewer2.org
 - Some material adapted from Interactive Data Visualization for the Web, 2nd Edition, by Scott Murray
