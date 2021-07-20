@@ -744,6 +744,8 @@ For example, in the image below, the colors have been assigned using the class e
 ![extra credit](assets/images/extra_credit.png)
 
 ### Acknowledgements:
+This assignment was adapted from an assignment designed by [Dr. Alex Godwin](https://www.jagodwin.com).
+
 - Force arrangement adapted from https://observablehq.com/@borowski-9ld/d3-force-directed-graph
 - Colors from http://colorizer.org/ and https://colorbrewer2.org
 - Some material adapted from Interactive Data Visualization for the Web, 2nd Edition, by Scott Murray
