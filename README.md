@@ -1,4 +1,4 @@
-# HW 5: Implement an Interactive Network
+# HW 3: Implement an Interactive Network
 You are going to write a visualization capable of representing node-link data. These datasets correspond to the contacts and friendship relations between students in a high school in Marseilles, France, in December 2013, as measured through several techniques.
 
 ## Preliminary Data Files:
