@@ -14,7 +14,7 @@ In this tutorial, we will only be using two of the datasets. The third is includ
 
 ## Prepare the Data:
 
-Let's start by importing [D3 JS](https://d3js.org/). As with the previous homework, we are also updating to the most recent version of D3 - v6 - so you can expect some changes from the previous homework and from the book. Having said that, much of what we will be doing in this homework closely follows the material in Chapter 13 with some updates for new syntax.
+Let's start by importing [D3 JS](https://d3js.org/). This assignment is using updated to use D3 - v6 - so you can expect some changes from the previous homework.
 
 ```html
 <script src="https://d3js.org/d3.v6.min.js"></script>
@@ -90,7 +90,7 @@ Which would output:
 ]
 ```
 
-We see few more males in the sample than females but not a terribly unbalanced dataset. There are also some "Unknown" members, which we might need to think about if we are going to be using this attribute later for a visual channel. 
+We see a few more males in the sample than females but not a terribly unbalanced dataset. There are also some "Unknown" members, which we might need to think about if we are going to be using this attribute later for a visual channel. 
 
 To get our data working in the force-directed layout, however, we are going to need to get our data into a different format (see example below from *Interactive Data Visualization for the Web, 2nd Ed.*):
 
@@ -205,7 +205,7 @@ Which gives us the following:
 ]
 ```
 
-Finally, to better align with the example in the book, we will use the following naming of our data:
+Finally, we will use the following naming of our data:
 
 ```javascript
 let dataset = {
