@@ -730,7 +730,7 @@ There are so many possible directions to go from here. When you highlight a node
 
 ## Where to go from Here:
 
-For full credit on this assignment, you will need to complete the tutorial, then take some additional steps to make this visualization your own:
+For full credit on this assignment, you will need to complete the tutorial. You will not need to do anything extra to get full-credit -- the tradeoff being that this assignment introduces a lot more complexity:
 
 1. [50%] **Visible Network**. The node-link diagram is drawn using the force-directed approach specified in the tutorial (though you can feel free to play around with the parameters or add additional forces).
 1. [25%] **Interactive Network**. The user can drag nodes. The user can pan and drag the entire layout.
