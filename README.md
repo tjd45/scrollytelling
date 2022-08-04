@@ -14,7 +14,7 @@ In this tutorial, we will only be using two of the datasets. The third is includ
 
 ## Prepare the Data:
 
-Let's start by importing [D3 JS](https://d3js.org/). This assignment is using updated to use D3 - v6 - so you can expect some changes from the previous homework.
+Let's start by importing [D3 JS](https://d3js.org/). This assignment is using D3 - v6 - so you can expect some changes from the previous homework.
 
 ```html
 <script src="https://d3js.org/d3.v6.min.js"></script>
@@ -239,7 +239,7 @@ var simulation  = d3.forceSimulation(dataset.nodes)
               .force("center", d3.forceCenter().x(w/2).y(h/2));
 ```
 
-By itelf, `forceSimulation` does not do very much. That is why we call it with three chained calls to `force()`, each one applying a different [type of force](https://github.com/d3/d3-force/blob/master/README.md#simulation_force) that we want to be included in our simulation. These forces can be whatever you want them to be, and can be fine-tuned to achieve the affect you want. The [full list is here](https://github.com/d3/d3-force/blob/master/README.md#forces), where the description for our current three forces has been obtained and reprinted here:
+By itself, `forceSimulation` does not do very much. That is why we call it with three chained calls to `force()`, each one applying a different [type of force](https://github.com/d3/d3-force/blob/master/README.md#simulation_force) that we want to be included in our simulation. These forces can be whatever you want them to be, and can be fine-tuned to achieve the affect you want. The [full list is here](https://github.com/d3/d3-force/blob/master/README.md#forces), where the description for our current three forces has been obtained and reprinted here:
 
 - **Charge**: The many-body (or n-body) force applies mutually amongst all nodes. It can be used to simulate gravity (attraction) if the strength is positive, or electrostatic charge (repulsion) if the strength is negative. This implementation uses quadtrees and the Barnes–Hut approximation to greatly improve performance; the accuracy can be customized using the theta parameter.
 
