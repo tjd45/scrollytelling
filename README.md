@@ -17,7 +17,7 @@ In this tutorial, we will only be using two of the datasets. The third is includ
 Let's start by importing [D3 JS](https://d3js.org/). This assignment is using D3 - v6 - so you can expect some changes from the previous homework.
 
 ```html
-<script src="https://d3js.org/d3.v6.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
 ```
 
 Creating force-directed layouts in D3 is not too tough, but it does mean that we need to prepare our data a certain way. We can anticipate from the files above that we will need to once again use an asynchronous loading scheme, using promise, to load multiple files. 
@@ -247,11 +247,11 @@ By itself, `forceSimulation` does not do very much. That is why we call it with 
 - **Link**: The link force pushes linked nodes together or apart according to the desired link distance. The strength of the force is proportional to the difference between the linked nodes’ distance and the target distance, similar to a spring force.
 - **Centering**: The centering force translates nodes uniformly so that the mean position of all nodes (the center of mass if all nodes have equal weight) is at the given position ⟨x,y⟩. This force modifies the positions of nodes on each application; it does not modify velocities, as doing so would typically cause the nodes to overshoot and oscillate around the desired center. This force helps keeps nodes in the center of the viewport, and unlike the positioning force, it does not distort their relative positions.
 
-Now, we need a way to see our nodes and links. Nothing too surprising here - we are going to create line edge marks and circle node marks. These will be added to the svg using the `enter()` join. We will set the edges as thin grey lines and the nodes as blue circles with a thin black edge. You may notice we are doing something a little different here - we are storing our nodes and edges inside `g` elements. This means that edgeMarks points to the `g` element, not the edges, so we will need to be careful when we select them. It has a big payoff later.
+Now, we need a way to see our nodes and links. Nothing too surprising here - we are going to create line edge marks and circle node marks. These will be added to the svg using the `enter()` join. We will set the edges as thin grey lines and the nodes as green circles with a thin black edge. You may notice we are doing something a little different here - we are storing our nodes and edges inside `g` elements. This means that edgeMarks points to the `g` element, not the edges, so we will need to be careful when we select them. It has a big payoff later.
 
 Just for fun, we will set the colors using a few different methods:
 - named color: "grey"
-- rgb: "rgb(0, 145, 242)"
+- rgb: "rgb(0, 100, 0)"
 - hex: "#000000"
 
 ```javascript
@@ -275,7 +275,7 @@ nodeMarks.selectAll("circle")
         .attr("r", 10)
         .style("stroke", "#000000")
         .style("stroke-width", 1)
-        .style("fill", "rgb(0, 145, 242)");
+        .style("fill", "rgb(0, 100, 0)");
 ```
 
 Getting this far will yield the following: 
@@ -329,7 +329,7 @@ nodeMarks.selectAll("circle")
     .attr("r", 10)
     .style("stroke", "#000000")
     .style("stroke-width", 1)
-    .style("fill", "rgb(0, 145, 242)")
+    .style("fill", "rgb(0, 100, 0)")
     .call(d3.drag()
 +           .on("start", dragstarted)
 +           .on("drag", dragged)
@@ -574,11 +574,11 @@ const node = g.append("g")
     .attr("transform", d => `translate(${d.y},${d.x})`);
 ```
 
-Just below that we are going to provide a specification for our text and circles for our nodes. We are appending a circle inside the `g`, and changing up the fill depending on whether the node has children or not. If so, we use the same shade of blue as our force-directed diagram. If not, light grey. We append a text element with relative y position of `0.31em`, which is a relative measure in CSS based on the [current font height](https://www.w3schools.com/cssref/css_units.asp). As with the node, the positioning depends on whether the node has children. If so, the text is left shifted and [anchored](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-anchor) to the end. If not, it is anchored the beginning of the x position, which is also shifted to the right. We also clone the element with a white stroke, which helps disambiguate the text from the lines.
+Just below that we are going to provide a specification for our text and circles for our nodes. We are appending a circle inside the `g`, and changing up the fill depending on whether the node has children or not. If so, we use the same shade of green as our force-directed diagram. If not, light grey. We append a text element with relative y position of `0.31em`, which is a relative measure in CSS based on the [current font height](https://www.w3schools.com/cssref/css_units.asp). As with the node, the positioning depends on whether the node has children. If so, the text is left shifted and [anchored](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-anchor) to the end. If not, it is anchored the beginning of the x position, which is also shifted to the right. We also clone the element with a white stroke, which helps disambiguate the text from the lines.
 
 ```javascript
 node.append("circle")
-    .attr("fill", d => d.children ? "rgb(0, 145, 242)" : "#999")
+    .attr("fill", d => d.children ? "rgb(0, 100, 0)" : "#999")
     .attr("r", 2.5);
 
 node.append("text")
@@ -605,7 +605,7 @@ nodeMarks.selectAll("circle")
       .attr("r", 10)
       .style("stroke", "#000000")
       .style("stroke-width", 1)
-      .style("fill", "rgb(0, 145, 242)")
+      .style("fill", "rgb(0, 100, 0)")
       .call(d3.drag()
               .on("start", dragstarted)
               .on("drag", dragged)
@@ -618,7 +618,7 @@ nodeMarks.selectAll("circle")
 +      .on("mouseout", function(event, d){
 +          d3.select(this)
 +              .style("stroke-width", 1)
-+              .style("fill", "rgb(0, 145, 242)")
++              .style("fill", "rgb(0, 100, 0)")
 +      });
 ```
 
@@ -626,7 +626,7 @@ Similarly, for our nodes in the tree diagram, we will highlight them on mouseove
 
 ```diff
 node.append("circle")
-      .attr("fill", d => d.children ? "rgb(0, 145, 242)" : "#999")
+      .attr("fill", d => d.children ? "rgb(0, 100, 0)" : "#999")
       .attr("r", 2.5)
 +      .on("mouseover", function(event, d){
 +          d3.select(this)
@@ -634,7 +634,7 @@ node.append("circle")
 +      })
 +      .on("mouseout", function(event, d){
 +          d3.select(this)
-+              .style("fill", d => d.children ? "rgb(0, 145, 242)" : "#999")
++              .style("fill", d => d.children ? "rgb(0, 100, 0)" : "#999")
 +      });
 ```
 
@@ -657,7 +657,7 @@ nodeMarks.selectAll("circle")
 
 ```diff
 node.append("circle")
-      .attr("fill", d => d.children ? "rgb(0, 145, 242)" : "#999")
+      .attr("fill", d => d.children ? "rgb(0, 100, 0)" : "#999")
       .attr("r", 2.5)
 +      .attr('id', d => {
 +          console.log(d);
@@ -669,7 +669,7 @@ What does that give us? Well, each mark now has a unique ID that we can use to g
 
 ```diff
 node.append("circle")
-    .attr("fill", d => d.children ? "rgb(0, 145, 242)" : "#999")
+    .attr("fill", d => d.children ? "rgb(0, 100, 0)" : "#999")
     .attr("r", 2.5)
     .attr('id', d => {
         console.log(d);
@@ -683,9 +683,9 @@ node.append("circle")
     })
     .on("mouseout", function(event, d){
         d3.select(this)
-            .style("fill", d => d.children ? "rgb(0, 145, 242)" : "#999")
+            .style("fill", d => d.children ? "rgb(0, 100, 0)" : "#999")
 +        d3.select('#n'+d.data.i)
-+            .style("fill", "rgb(0, 145, 242)");
++            .style("fill", "rgb(0, 100, 0)");
     });
 ```
 
@@ -701,7 +701,7 @@ nodeMarks.selectAll("circle")
   })
   .style("stroke", "#000000")
   .style("stroke-width", 1)
-  .style("fill", "rgb(0, 145, 242)")
+  .style("fill", "rgb(0, 100, 0)")
   .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
@@ -717,10 +717,10 @@ nodeMarks.selectAll("circle")
   .on("mouseout", function(event, d){
       d3.select(this)
           .style("stroke-width", 1)
-          .style("fill", "rgb(0, 145, 242)")
+          .style("fill", "rgb(0, 100, 0)")
 +      d3.select('#t'+d.i)
 +          .style("stroke-width", 1)
-+          .style("fill", d => d.children ? "rgb(0, 145, 242)" : "#999")
++          .style("fill", d => d.children ? "rgb(0, 100, 0)" : "#999")
   });
 ```
 
