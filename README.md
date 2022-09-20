@@ -14,7 +14,7 @@ In this tutorial, we will only be using two of the datasets. The third is includ
 
 ## Prepare the Data:
 
-Let's start by importing [D3 JS](https://d3js.org/). This assignment is using D3 - v6 - so you can expect some changes from the previous homework.
+Let's start by importing [D3 JS](https://d3js.org/). 
 
 ```html
 <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -638,7 +638,7 @@ node.append("circle")
 +      });
 ```
 
-Notice that, in both cases, we opted not to use the `=>` arrow notation in ES6 that we have been adopting so regularly. That is because we need to be able to readily access `this`, which refers to the current mark being drawn. The arrow does not have a binding for `this`, so it is more convenient to use the more traditional anonymous function here.
+Notice that, in both cases, we opted not to use the `=>` arrow notation in the Javascript revision [ES6](https://www.w3schools.com/js/js_es6.asp) that we have been adopting so regularly. That is because we need to be able to readily access `this`, which refers to the current mark being drawn. The arrow does not have a binding for `this`, so it is more convenient to use the more traditional anonymous function here.
 
 To highlight across the two, there are a few approaches we could take. We need to make a small change to the way in which our marks are created. We are going to add CSS `id` attributes to them so that we can easily grab them even from the other svg. We are giving the marks in the force-directed network an id that starts with an n followed by the id number. We are giving the marks in the tree an id that starts with an t followed by the id number.
 
