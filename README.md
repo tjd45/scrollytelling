@@ -102,7 +102,7 @@ For the ```drawKeyframe``` function we will need to call other functions that we
 // We need to define a keyframe index globally to keeep track of where we are at in the narrative flow
 let keyframeIndex = 0
 
-function drawkKeyframe(kfi){
+function drawKeyframe(kfi){
   // Get the current keyframe 
   let kf = keyframes[kfi];
 
@@ -183,10 +183,104 @@ document.getElementById("forward-button").addEventListener("click", forwardClick
 document.getElementById("backward-button").addEventListener("click", backwardClicked);
 ```
 
-When you go and click these buttons now nothing will change visually but you should see in the inspector that the classes of the relevant verses and lines are being updated. Nowe we need to go and define some css classes so that this change in class is reflected visually:
+When you go and click these buttons now nothing will change visually but you should see in the inspector that the classes of the relevant verses and lines are being updated. Now we we need to go and define some css classes so that this change in class is reflected visually:
 
 ```css
+.active-verse {
+  font-weight: 900;
+  color: #555;
+}
 
+.active-line {
+  color: black;
+}
+```
+
+These two classes will change the colour of the font and increase the weight of the active verse when they are updated. The last step to finishing the preliminary scrollytelling experience is to draw the first keyframe when the page loads. To do this we are going to define an ```initialise``` function to handle anything that we would like to do right when the page loads. At the moment all this entails is drawing the first keyframe which we can do using the global keyframe index that we have defined:
+
+```Javascript
+function initialise() {
+    drawKeyframe(keyframeIndex);
+}
+
+initialise();
+```
+
+Now when we load the webpage we should see that the first verse is in a heavier font and all highlighted in black. Clicking the forward and backward buttons should update this in line with our keyframes.
+
+This is a good start but it is a little bit clumsy. Let's start by tidying up the visualsa  little bit so that the experience is a little bit less messy. Firstly, because I want this experience to be a seamless full-screen experience for a user I don't want their to be a scrollbar that appears on the side of the page. To achieve this we are going to force the left column content div to have a maximum height like this:
+
+```css
+.left-column-content{
+    // This forces the maximum height of the div to be equal to 100 % of the view height (the current size of the screen)
+    // the -150px is the size of the header and the footer combinedd
+    // You should be very careful when writing css like this as there are potential complications you can run into
+    // when using viewport units (vh) and you'll also need to be careful that if you update the height of the
+    // header or footer that you are sure to update the value here.
+    max-height: calc(100vh - 150px);
+}
+```
+
+As you should see this kind of works but now our page looks even messier as even though the size of the div has been fixed, the ccontent of the div is overflowing out of it and making our page look messy. To fix this let's set the ```overflow``` css property to handle this.
+
+```css
+.left-column-content {
+  max-height: calc(100vh - 150px);
+  overflow: auto;
+}
+```
+
+This is much better, but having the scrollbar appear on the div is quite messy. Let's add some more css to hide the scrollbar whilst still allowing the user to scroll. To do this we need to access the ```-webkit-scrollbar``` css class. This may differ from browser to browser, but this is how you can achieve this when using Chrome:
+
+```css
+.left-column-content::-webkit-scrollbar {
+  width: 0; /* Hide the scrollbar's width */
+  height: 0; /* Hide the scrollbar's height */
+}
+```
+
+For more information on designing custom scrollbars and which browsers support what, you can look at this tutorial: https://www.w3schools.com/howto/howto_css_custom_scrollbar.asp. 
+
+*** TIDY UP LINK ***
+
+So now our page looks a lot nicer, but ideally we would like the page to automatically scroll so that when the user moves to the next keyframe the relevant text is in the middle of the screen. To do this, let's define a function called ```scrollLeftColumnToActiveVerse``` which will do exactly what it sounds like. We we will call this function every time that the active verse is updated. The code should look something like this. Take a moment to read the code carefully and sketch it out if you want to get your head around exactly why the calculations work.
+
+```Javascript
+function scrollLeftColumnToActiveVerse(id) {
+    // First we want to select the div that is displaying our text content
+    var leftColumn = document.querySelector(".left-column-content");
+
+    // Now we select the actual verse we would like to be centred, this will be the <ul> element containing the verse
+    var activeVerse = document.getElementById("verse" + id);
+
+    // The getBoundingClientRect() is a built in function that will return an object indicating the exact position
+    // Of the relevant element relative to the current viewport.
+    // To see a full breakdown of this read the documentation here: https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+    var verseRect = activeVerse.getBoundingClientRect();
+    var leftColumnRect = leftColumn.getBoundingClientRect();
+
+    // Now we calculate the exact location we would like to scroll to in order to centre the relevant verse
+    // Take a moment to rationalise that this calculation does what you expect it to
+    var desiredScrollTop = verseRect.top + leftColumn.scrollTop - leftColumnRect.top - (leftColumnRect.height - verseRect.height) / 2;
+
+    // Finally we scroll to the right location using another built in function.
+    // The 'smooth' value means that this is animated rather than happening instantly
+    leftColumn.scrollTo({
+        top: desiredScrollTop,
+        behavior: 'smooth'
+    })
+}
+
+function updateActiveVerse(id) {
+    // Reset the current active verse - in some scenarios you may want to have more than one active verse, but I will leave that as an exercise for you to figure out
+    d3.selectAll(".verse").classed("active-verse", false);
+
+    // Update the class list of the desired verse so that it now includes the class "active-verse"
+    d3.select("#verse" + id).classed("active-verse", true);
+
+    // Scroll the column so the chosen verse is centred
+    scrollLeftColumnToActiveVerse(id);
+}
 ```
 
 
