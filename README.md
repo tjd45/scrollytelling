@@ -230,9 +230,7 @@ This is much better, but having the scrollbar appear on the div is quite messy. 
 }
 ```
 
-For more information on designing custom scrollbars and which browsers support what, you can look at this tutorial: https://www.w3schools.com/howto/howto_css_custom_scrollbar.asp.
-
-**_ TIDY UP LINK _**
+For more information on designing custom scrollbars and which browsers support what, you can look at [this tutorial](https://www.w3schools.com/howto/howto_css_custom_scrollbar.asp).
 
 So now our page looks a lot nicer, but ideally we would like the page to automatically scroll so that when the user moves to the next keyframe the relevant text is in the middle of the screen. To do this, let's define a function called `scrollLeftColumnToActiveVerse` which will do exactly what it sounds like. We we will call this function every time that the active verse is updated. The code should look something like this. Take a moment to read the code carefully and sketch it out if you want to get your head around exactly why the calculations work.
 
