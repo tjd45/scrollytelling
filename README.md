@@ -698,20 +698,122 @@ bars.enter().append("rect")
 You'll notice that the existing bars still move instantly and that the old bars being removed just disappear as well as the axes changing instantly too. Part of your homework will be to make this happen smoothly.
 
 ## Adding some interactivity
+For the final part of the tutorial we are going to introuduce some interactivity. In the final verse I would like add the ability to click on the word *red* in the text and when this happens to highlight the red bar in the chart. We already have a function that does this highlighting so all we need to do now is find a way to trigger it when we click on the word in verse 4. To achieve this we are going to wrap the word in a \<span> element and give it a specific class name:
+
+```html
+<ul class="verse" id="verse4">
+            <li class="line" id="line1"> Roses are <span class="red-span">red</span></li>
+            <li class="line" id="line2">Never really blue</li>
+            <li class="line" id="line3">Let's put these bars in order</li>
+            <li class="line" id="line4">So the graph looks nice too</li>
+          </ul>
+
+```
+
+Let's also make sure we are highlighting the right verse when we reach this part of the experience by adding a keyframe to achieve this, in this situtation we don't need to have an svgUpdate because it is currently displaying the correct chart (roses).
+
+```Javascript
+let keyframes = [
+...
+{
+        activeVerse: 4,
+        activeLines: [1, 2, 3, 4]
+}
+...
+]
+```
+
+Now we'll define our function ```makeRedClickable``` and add the behaviour we want. We could do this using javascript query selectors but instead we'll make use of d3. We'll also add some css so that the user knows they can click on the word when they hover over it. Finally in our ```initialise``` function we need to call our new function.
+
+```css
+.red-span {
+  cursor: pointer;
+}
+```
+```Javascript
+function makeRedClickable() {
+    d3.select(".red-span").on("click", () => highlightColour("Red", "red"));
+}
+
+async function initialise() {
+
+    await loadData();
+    initialiseSVG();
+    drawKeyframe(keyframeIndex);
+    // Call the new function when we initialise the page
+    makeRedClickable();
+
+}
+```
+
+Conversely I would like to add a feature whereby in the fourth verse when I hover over the bar that represents the red span the word red in the text is highlighted red.
+
+Firstly let's define a css class that we can turn on/off that will make the text red:
+
+```css
+.red-text{
+            color: red;
+}
+```
+
+Now let's write a function called ```makeRedBarHoverable()```. This function will first use d3's built in filter operation to select just the bar with the value "Red". Then we can use d3's way of adding an event listener (```.on()```) to add a ```mouseover``` event to this bar. Finally, we have to remember to call this function in our last keyframe too.
+
+```Javascript
+function makeRedBarHoverable() {
+    // Select the bar associated with the "red" value
+    const redBar = chart.select(".bar").filter(d => d.colour === "Red");
+
+    // Add a mouseover event listener
+    redBar.on("mouseover", () => {
+        d3.selectAll(".red-span").classed("red-text", true); //This will select all elements with the class name "red-span" not just one.
+    });
+
+};
+```
+
+Note that this changes the colour to red when you mouseover the bar but when you mouseout of the bar the colour of the text stays red. To tweak this you would have to add another event listener on the ```mouseout``` value to reset the colour.
+
+One final trick we can do to indicate to a user that there might be some interactivity with the bar chart is to slightly change the colour of the bars when we hover over them. We can do this using css like this:
+
+```csss
+.bar:hover {
+  fill: #aaa;
+}
+```
+
+The only downside of this is that when we are changing the colour of the bars when we highlight them this hover effect will look strange because we will be changing it back to grey when we hover. One potential solution to this is to define new classes for the coloured bars such that they have their own hover colours associated. Another solution would be to define the hover behaviour in the javascript and utilise the mouseover and mouseout event listeners to dynamically change the style of the bars.
+
+Keyframes if you have finished the tutorial correctly
+1. Verse 1 all lines highlighted, rose bar chart displayed
+2. Verse 2 all lines highlighted, violet bar chart displayed
+3. Verse 3 line 1 highlighted, rose bar chart displayed
+4. Verse 3 line 2 highlighted, red bar in bar chart highlighted
+5. Verse 3 line 3 highlighted, white bar in bar chart highlighted
+6. Verse 3 line 4 highlighted, no bars highlighted
+7. Verse 4 line all ines highlighted, hovering over the 'red' bar should change the colour of the word red in the verse to red.
+
+## Homework Assignment
+
+This homework assignment requires quite a lot more work than previous assignments with less guidance so I recommend that you make a start as soon as possible so that you can attend office hours should you need to.
+
+If you follow along with the tutorial you will be a long way to completing the assignment but there are various things that you will need to add and change before your work is ready. There are various ```TODO's``` left in the assignment code which should guide you.
+
+For full credit your assignment should:
+
+1. On load display the poem centred on the first verse in the left hand panel with all of these lines emphasised in some way to show that they are active.
+2. On load the rose colours distribution bar chart should be drawn.
+3. The next and previous button should update the page according to what was implemented during the tutorial. For a full breakdown of this expected behaviour see the bottom of the previous section. The only exception to this is where a subsequent step here updates the behaviour expected.
+4. Update the styling so that more cohesive colours are used. You may go as far as you like with changing the styling of the page but at a minimum you should change the backgrounds of the left panel and the right panel. You will be marked on the overall aesthetic cohesion of the page/experience.
+5. At the end of verse 3, when the 4th line is highlighted, every bar should be highlighted in the colour that it represents.
+6. For verse 4 the keyframes should be updated so that each line is highlighted in turn, instead of the whole verse being highlighted. On line 3 ("Let's put these bars in order") the graphic should smoothly update to reorder the bars so that they are in descending order with the highest value on the far left of the graph.
+7. Hovering over *any* instance of the word "red" or "purple" should highlight the corresponding bar (if it exists) in the bar chart. When your mouse leaves the word the bar chart should return to it's original colour.
+8. Clicking on the red bar when verse 4 is displayed (and only when verse 4 is displayed) should update every instance of the word 'red' in the poem to be coloured red. Clicking the bar for a second time should return this to the word's original colour.
+9. Add a fifth verse with associated keyframes (You will not be marked on the quality of your poetry). The chart should update to display either the rose data or violet data as a pie chart. This does *NOT* have to be animated and can be a sudden chage.
+10. Additional credit - Animate the transition between bar chart and pie chart - be creative, it might not be a simple 1 to 1 transition, you may have to exit the bars and re introduce the pie slices.
+11. Additional credit - See if you can bind the forward and backward functions to a user's scrollwheel. If you have attempted this please leave a comment at the top of your js code saying ```//Additional Scroll Credit Attempted```
 
 
-## Where to go from Here:
 
-For full credit on this assignment, you will need to complete the tutorial. You will not need to do anything extra to get full-credit -- the tradeoff being that this assignment introduces a lot more complexity:
-
-1. [50%] **Visible Network**. The node-link diagram is drawn using the force-directed approach specified in the tutorial (though you can feel free to play around with the parameters or add additional forces).
-1. [25%] **Interactive Network**. The user can drag nodes. The user can pan and drag the entire layout.
-1. [15%] **Visible Tree**. The tidy tree layout is created as specified in the tutorial.
-1. [10%] **Interactive Tree**. Hovering over any node in the tree highlights the same node in the node-link diagram and vice-versa.
-1. Extra Credit [+5%]: **Customized Look** Draw the nodes in the node-link diagram differently depending on the attributes (e.g., gender, class) or network metrics (e.g., out-degree). If color is used, it should be consistent between the network and tree. You can also consider styling the edges of the node-link diagram instead: edge weight and direction are both good options for this.
-1. Extra Credit [+5%]: **Tree from Network** When the user clicks on a node in the node-link diagram, the tree for that node is drawn. If a tree was already there, it is removed (e.g., with `remove()` or a potentially more elegant update-based transitions) and replaced with the new one.
-
-For example, in the image below, the colors have been assigned using the class each student belongs to. The nodes are sized by degree and the links are sized by edge weight. On hover, only the hovered node and its out-degree adjacent nodes retain their opacity, all other nodes and edges are made somewhat transparent. A stroke has been added to the tree node circles. On click, the tree is drawn again for the selected node.
 
 ![extra credit](assets/images/extra_credit.png)
 
