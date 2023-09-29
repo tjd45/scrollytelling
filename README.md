@@ -339,6 +339,358 @@ The final little change we are going to make is to ensure that the content alway
 ## Scrollytelling - Updating Visualisation to go with the Text
 Now that we have finished how the text should display for our scrollytelling, the next step is to update the right hand panel of the screen to display and change visualisation associated with each keyframe.
 
+As the very first step of doing this we will initialise our svg to make sure it is the right size.
+
+```Javascript
+// Define the height and width of the svg as global variables
+const width = 500;
+const height = 400;
+
+// Define the svg itself as a global variable
+let svg;
+
+function initialiseSVG(){
+    let svg = d3.select("#svg");
+    svg.attr("width",width);
+    svg.attr("height",height);
+}
+
+function initialise() {
+    initialiseSVG();
+    drawKeyframe(keyframeIndex);
+}
+```
+
+Now you should see an svg which is centred vertically and horizontally (thanks to the provided css) in the right hand panel of the screen. It's background colour is currently being set by css too. You can do this either using css or by setting the style in the javascript.
+
+This homework makes use of two dummy datasets stored in files *rose_colours.json* and *violet_colours.json*. The rose colours looks like this and shows the distribution of colours of roses (these numbers are fictional).
+
+```Javascript
+[
+  { "colour": "Red", "count": 25 },
+  { "colour": "Pink", "count": 42 },
+  { "colour": "White", "count": 18 },
+  { "colour": "Yellow", "count": 12 },
+  { "colour": "Orange", "count": 15 }
+]
+```
+
+As we are going to do some manipulating and playing around with the data we are also going to asynchronously load the two data files as part of our ```initialise``` function.
+
+```Javascript
+// Initialise two global variables to store the data when it is loaded
+let roseChartData;
+let violetChartData;
+
+// You have to use the async keyword so that javascript knows that this function utilises promises and may not return immediately
+async function loadData() {
+    // Because d3.json() uses promises we have to use the keyword await to make sure each line completes before moving on to the next line
+    await d3.json("../../data/rose_colours.json").then(data => {
+        // Inside the promise we set the global variable equal to the data being loaded from the file    
+        roseChartData = data;
+    });
+
+    await d3.json("../../data/violet_colours.json").then(data => {
+        violetChartData = data;
+    });
+}
+
+// Now that we are calling an asynchronous function in our initialise function this function also now becomes async
+async function initialise() {
+    // Don't forget to await the call to loadData()
+    await loadData();
+    initialiseSVG();
+    drawKeyframe(keyframeIndex);
+}
+
+```
+
+So as a first step I would like to draw a bar chart of the rose data when we display the first keyframe. Because of the way we have set this up we can simply add an extra field to our first keyframe with the name of a function to call and then update our ```drawKeyframe``` function so that it calls the function when it also updates the text highlighting. Let's start by doing this with a dummy function:
+
+```Javascript
+let keyframes = [
+    {
+        activeVerse: 1,
+        activeLines: [1, 2, 3, 4],
+        svgUpdate: drawRoseColours
+    },
+    {
+        activeVerse: 2,
+        activeLines: [1, 2, 3, 4]
+    },
+```
+...
+```Javascript
+function drawRoseColours(){
+    console.log("Drawing the rose bar chart");
+}
+
+function drawKeyframe(kfi) {
+    let kf = keyframes[kfi];
+
+    resetActiveLines();
+    updateActiveVerse(kf.activeVerse);
+
+    for (line of kf.activeLines) {
+        updateActiveLine(kf.activeVerse, line);
+    }
+
+    // We need to check if their is an svg update function defined or not
+    if(kf.svgUpdate){
+        // If there is we call it like this
+        kf.svgUpdate();
+    }
+}
+```
+Now when we open the page we should see that the console outputs our message. Let's go and write up the ```drawRoseColours``` function. I've provided you an implementation of the ```drawBarChart``` function which I recommend you taking some time to read carefully to make sure you understand what it does. As a result in order to draw our bar chart it should be as simple as updating the ```drawRoseColours``` function like this:
+
+```Javascript
+function drawRoseColours() {
+    drawBarChart(roseChartData, "Distribution of Rose Colours");
+}
+```
+Now you should see that the bar chart is successfully drawn on the screen when the page loads.
+
+For the second verse I would like to display a bar chart of the violet colour distribution. Because of the way I have implemented the drawBarChart function we can achieve this fairly easily. First we want to update the second keyframe:
+```Javascript
+{
+        activeVerse: 2,
+        activeLines: [1, 2, 3, 4],
+        svgUpdate: drawVioletColours
+}
+```
+And then we update the drawVioletColours dummy function:
+```Javascript
+function drawVioletColours() {
+    drawBarChart(violetChartData, "Distribution of Violet Colours");
+}
+```
+Now when we click the next button we'll see that the chart updates to the violet distribution and when we click back it will update back to the roses.
+
+This satisfies our purpose, btu I would prefer for this transition to be a little bit smoother and because of the way ```drawBarChart``` works we are doing a lot of work behind the scenes as we are effectively deleting our whole visualisation and drawing it again each time. In this small example this is not too much of a concern but when you work with larger datasets you might want to optimise this. Additionally as our datsets are very similar and have some overlap it means we can do some nice stuff with transitions (more on this soon).
+
+So to tidy this up we are going to create a new function to replace ```drawBarchart``` that will be called ```updateBarchart```. Additionally because we no longer want to throw away the whole bar chart and reinstantiate it every time we're going to have to make a lot of the variables global. Let's start with that:
+```Javascript
+// Declare global variables for the chart
+
+// This will hold where the actual section of the graph where visual marks, in our case the bars, are being displayed
+// Additionally we'll store the dimensions of this space too
+let chart;
+let chartWidth;
+let chartHeight;
+
+// Declare both scales too
+let xScale;
+let yScale;
+```
+
+Now we want to move on to write our ```updateBarchart``` function:
+```Javascript
+// As with the draw bar chart function we will pass the data we want to draw and the title of the graph
+// There might be situations where we want to update the chart without updating the title
+// To handle this we pass a default value to the title of an empty string
+function updateBarChart(data, title = "") {
+    //Update our scales so that they match the new data
+    //As our svg is staying the same dimensions each time we only need to update the domains
+    xScale.domain(data.map(d => d.colour));
+    yScale.domain([0, d3.max(data, d => d.count)]).nice();
+
+    // We want to make a selection of the existing bars in the chart
+    // This line of code will bind the new data we have loaded to our bars
+    const bars = chart.selectAll(".bar")
+        .data(data, d => d.colour);
+
+    // First we want to remove any bars that we no longer want to display
+    // bars.exit() is a d3 selection that will return any bars that are not in the new selection.
+    // when we call this function to initially draw the bar chart this won't return anything because their were no bars to begin with
+    // when we call this to draw the violet bar chart when the rose one was being displayed the exit selection will be the bars that had values in the rose dataset but don't exist in the violet one
+    // calling remove on this selection will remove all these bars from the graph
+    bars.exit()
+        .remove();
+
+    // Now we want to move any bars that had values in the old dataset but now have new values or locations
+    bars.attr("x", d => xScale(d.colour))
+        .attr("y", d => yScale(d.count))
+        .attr("height", d => chartHeight - yScale(d.count));
+
+    // Finally we will add any bars that are new
+    // To do that we will use the d3 built in function .enter() which provides a selection of any new values
+    bars.enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", d => xScale(d.colour))
+        .attr("width", xScale.bandwidth())
+        .attr("fill", "#999")
+        .attr("y", d => yScale(d.count))
+        .attr("height", d => chartHeight - yScale(d.count));
+
+    // Next let's update the axes so they are displayed correctly
+    chart.select(".x-axis")
+        .call(d3.axisBottom(xScale));
+
+    chart.select(".y-axis")
+        .call(d3.axisLeft(yScale));
+
+    // And finally if a new title has been specified we will update the title too
+    if (title.length > 0) {
+        svg.select("#chart-title")
+            .text(title);
+    }
+}
+
+```
+
+One last change we'll have to make before this all functions properly is to make sure that the global variables we have declared are actually defined. We can do this in our ```initialiseSvg``` function:
+
+```Javascript
+function initialiseSVG() {
+    svg.attr("width", width);
+    svg.attr("height", height);
+
+    svg.selectAll("*").remove();
+
+    const margin = { top: 30, right: 30, bottom: 50, left: 50 };
+    chartWidth = width - margin.left - margin.right;
+    chartHeight = height - margin.top - margin.bottom;
+
+    chart = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    xScale = d3.scaleBand()
+        .domain([])
+        .range([0, chartWidth])
+        .padding(0.1);
+
+    yScale = d3.scaleLinear()
+        .domain([])
+        .nice()
+        .range([chartHeight, 0]);
+
+    // Add x-axis
+    chart.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0,${chartHeight})`)
+        .call(d3.axisBottom(xScale))
+        .selectAll("text");
+
+    // Add y-axis
+    chart.append("g")
+        .attr("class", "y-axis")
+        .call(d3.axisLeft(yScale))
+        .selectAll("text");
+
+    // Add title
+    svg.append("text")
+        .attr("id", "chart-title")
+        .attr("x", width / 2)
+        .attr("y", 20)
+        .attr("text-anchor", "middle")
+        .style("font-size", "18px")
+        .style("fill", "white")
+        .text("");
+```
+This sets up our svg nicely and allows us to update the various axes and titles with our new values.
+
+Now we can actually delete our drawBarchart function and replace all the calls to it with the new function:
+
+```Javascript
+function drawRoseColours() {
+    updateBarChart(roseChartData, "Distribution of Rose Colours");
+}
+
+function drawVioletColours() {
+    updateBarChart(violetChartData, "Distribution of Violet Colours");
+}
+```
+
+This should all work properly now, all though it all changes rather suddenly... we'll address that in a little bit. For now let's move on to our next keyframes.
+
+For verse 3 I want to highlight each line of the poem in turn. On the first line of the verse we need to update the bar chart so that it displays the rose distribution again. Then we're going to highlight the corresponding bar that the line of the poem is talking about in turn.
+
+Our update keyframes are going to look like this:
+```Javascript
+let keyframes = [
+    ...
+    {
+        activeVerse: 3,
+        activeLines: [1],
+        svgUpdate: drawRoseColours
+    },
+    {
+        activeVerse: 3,
+        activeLines: [2],
+        svgUpdate: () => highlightColour("Red", "red")//Note the slightly weird syntax here as we want to pass values to the function so we have to use an anonymous function to do this otherwise svgUpdate will just be bound to the result of running that function with those arguments
+    },
+    {
+        activeVerse: 3,
+        activeLines: [3],
+        svgUpdate: () => highlightColour("White", "white") 
+    },
+    {
+        activeVerse: 3,
+        activeLines: [4],
+        svgUpdate: () => highlightColour("", "")
+    }
+```
+
+Now let's go ahead and write the highlightColour function. There are a few different ways we could do this, but we're going to do it by selecting all the bars and just updating the fill of the bar that has the same colour bound to it that we are looking for:
+
+```Javascript
+function highlightColour(colourName, highlightColour) {
+    svg.selectAll(".bar")
+        .attr("fill", function (d) {
+            // We only want to update the colour field is equal to what we have passed
+            // Otherwise we want to reset the colour value to the default (#999)
+            if (d.colour === colourName) {
+                return highlightColour;
+            } else {
+                return "#999"
+            }
+        })
+
+}
+```
+
+This works fine but let's neaten up the code a little bit by using an anonymous function and a ternary if statement so that we use a lot less space.
+
+```Javascript
+function highlightColour(colourName, highlightColour) {
+
+    // This does exactly the same as the previous approach but in one line        
+    svg.selectAll(".bar")
+        .attr("fill", d => (d.colour === colourName ? highlightColour : "#999"));
+
+}
+```
+
+Ok now let's add our first transition to make this change a bit more smoothly. I'd like the colour to change from it's original to the new value over the course of half a second. We can achieve this using d3's built in handling of transitions:
+
+```Javascript
+   svg.selectAll(".bar")
+        .transition() // call transition immediately before the attribute that you are changing
+        .duration(500) // decide how long you want that transition to last in milliseconds
+        .attr("fill", d => (d.colour === colourName ? highlightColour : "#999"));
+```
+
+Now we've added that simple transition let's return to our ```updateBarchart``` function and make this work a bit smoother. We are going to add a transition such that when a new bar is added it moves in smoothly from the bottom of the graph. to do that we are going to tweak the section of code around the ```bars.enter()``` call which deals with new bars to be drawn:
+
+```Javascript
+bars.enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", d => xScale(d.colour))
+        .attr("y", chartHeight) // Set initial y position below the chart so we can't see it
+        .attr("width", xScale.bandwidth())
+        .attr("height", 0) // Set initial height to 0 so there is nothing to display
+        .attr("fill", "#999")
+        .transition() // Declare we want to do a transition
+        .duration(1000) // This one is going to last for one second
+        .attr("y", d => yScale(d.count)) // Update the y value so that the bar is in the right location vertically
+        .attr("height", d => chartHeight - yScale(d.count)); // Update the height value
+```
+
+You'll notice that the existing bars still move instantly and that the old bars being removed just disappear as well as the axes changing instantly too. Part of your homework will be to make this happen smoothly.
+
+## Adding some interactivity
+
 
 ## Where to go from Here:
 
@@ -356,10 +708,5 @@ For example, in the image below, the colors have been assigned using the class e
 ![extra credit](assets/images/extra_credit.png)
 
 ### Acknowledgements:
-This assignment was adapted from an assignment designed by [Dr. Alex Godwin](https://www.jagodwin.com).
+This assignment was designed by [Thomas Davidson](https://www.tjd45.github.io).
 
-- Force arrangement adapted from https://observablehq.com/@borowski-9ld/d3-force-directed-graph
-- Colors from http://colorizer.org/ and https://colorbrewer2.org
-- Some material adapted from Interactive Data Visualization for the Web, 2nd Edition, by Scott Murray
-- Tree layout adapted from https://observablehq.com/@d3/tidy-tree
-- Dataset from http://www.sociopatterns.org/datasets/high-school-contact-and-friendship-networks/
