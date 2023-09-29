@@ -820,7 +820,8 @@ For full credit your assignment should:
 10. [15%] Add a fifth verse with associated keyframes (You will not be marked on the quality of your poetry). The chart should update to display either the rose data or violet data as a pie chart. This does _NOT_ have to be animated and can be a sudden chage.
 11. [10%] General cohesion of the experience
 
-
+</br>
+</br>
 
 12. [5%] *Optional additional credit* - Animate the transition between bar chart and pie chart - be creative, it might not be a simple 1 to 1 transition, you may have to exit the bars and re introduce the pie slices.
 13. [5%] *Optional additional credit* - See if you can bind the forward and backward functions to a user's scrollwheel. If you have attempted this please leave a comment at the top of your js code saying `//Additional Scroll Credit Attempted`
