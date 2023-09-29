@@ -77,19 +77,7 @@ let keyframes = [
     },
     {
         activeVerse: 4,
-        activeLines: [1]
-    },
-    {
-        activeVerse: 4,
-        activeLines: [2]
-    },
-    {
-        activeVerse: 4,
-        activeLines: [3]
-    },
-    {
-        activeVerse: 4,
-        activeLines: [4]
+        activeLines: [1, 2, 3, 4]
     }
 ]
 ```
