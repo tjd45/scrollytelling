@@ -813,10 +813,6 @@ For full credit your assignment should:
 11. Additional credit - See if you can bind the forward and backward functions to a user's scrollwheel. If you have attempted this please leave a comment at the top of your js code saying ```//Additional Scroll Credit Attempted```
 
 
-
-
-![extra credit](assets/images/extra_credit.png)
-
 ### Acknowledgements:
 This assignment was designed by [Thomas Davidson](https://www.tjd45.github.io).
 
