@@ -791,13 +791,14 @@ For full credit your assignment should:
 2. On load the rose colours distribution bar chart should be drawn.
 3. The next and previous button should update the page according to what was implemented during the tutorial. For a full breakdown of this expected behaviour see the bottom of the previous section. The only exception to this is where a subsequent step here updates the behaviour expected.
 4. Update the styling so that more cohesive colours are used. You may go as far as you like with changing the styling of the page but at a minimum you should change the backgrounds of the left panel and the right panel. You will be marked on the overall aesthetic cohesion of the page/experience.
-5. At the end of verse 3, when the 4th line is highlighted, every bar should be highlighted in the colour that it represents.
-6. For verse 4 the keyframes should be updated so that each line is highlighted in turn, instead of the whole verse being highlighted. On line 3 ("Let's put these bars in order") the graphic should smoothly update to reorder the bars so that they are in descending order with the highest value on the far left of the graph.
-7. Hovering over *any* instance of the word "red" or "purple" should highlight the corresponding bar (if it exists) in the bar chart. When your mouse leaves the word the bar chart should return to it's original colour.
-8. Clicking on the red bar when verse 4 is displayed (and only when verse 4 is displayed) should update every instance of the word 'red' in the poem to be coloured red. Clicking the bar for a second time should return this to the word's original colour.
-9. Add a fifth verse with associated keyframes (You will not be marked on the quality of your poetry). The chart should update to display either the rose data or violet data as a pie chart. This does *NOT* have to be animated and can be a sudden chage.
-10. Additional credit - Animate the transition between bar chart and pie chart - be creative, it might not be a simple 1 to 1 transition, you may have to exit the bars and re introduce the pie slices.
-11. Additional credit - See if you can bind the forward and backward functions to a user's scrollwheel. If you have attempted this please leave a comment at the top of your js code saying ```//Additional Scroll Credit Attempted```
+5. When the bar chart being displayed is changed, bars being deleted, bars moving, bars being added, axes updating, and axes labels moving should all happen smoothly using transitions.
+6. At the end of verse 3, when the 4th line is highlighted, every bar should be highlighted in the colour that it represents.
+7. For verse 4 the keyframes should be updated so that each line is highlighted in turn, instead of the whole verse being highlighted. On line 3 ("Let's put these bars in order") the graphic should smoothly update to reorder the bars so that they are in descending order with the highest value on the far left of the graph.
+8. Hovering over *any* instance of the word "red" or "purple" should highlight the corresponding bar (if it exists) in the bar chart. When your mouse leaves the word the bar chart should return to it's original colour.
+9. Clicking on the red bar when verse 4 is displayed (and only when verse 4 is displayed) should update every instance of the word 'red' in the poem to be coloured red. Clicking the bar for a second time should return this to the word's original colour.
+10. Add a fifth verse with associated keyframes (You will not be marked on the quality of your poetry). The chart should update to display either the rose data or violet data as a pie chart. This does *NOT* have to be animated and can be a sudden chage.
+11. Additional credit - Animate the transition between bar chart and pie chart - be creative, it might not be a simple 1 to 1 transition, you may have to exit the bars and re introduce the pie slices.
+12. Additional credit - See if you can bind the forward and backward functions to a user's scrollwheel. If you have attempted this please leave a comment at the top of your js code saying ```//Additional Scroll Credit Attempted```
 
 
 ### Acknowledgements:
