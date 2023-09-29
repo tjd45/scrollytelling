@@ -674,6 +674,10 @@ Ok now let's add our first transition to make this change a bit more smoothly. I
 Now we've added that simple transition let's return to our ```updateBarchart``` function and make this work a bit smoother. We are going to add a transition such that when a new bar is added it moves in smoothly from the bottom of the graph. to do that we are going to tweak the section of code around the ```bars.enter()``` call which deals with new bars to be drawn:
 
 ```Javascript
+function updateBarChart(data, title = "") {
+
+...
+
 bars.enter().append("rect")
         .attr("class", "bar")
         .attr("x", d => xScale(d.colour))
@@ -685,6 +689,10 @@ bars.enter().append("rect")
         .duration(1000) // This one is going to last for one second
         .attr("y", d => yScale(d.count)) // Update the y value so that the bar is in the right location vertically
         .attr("height", d => chartHeight - yScale(d.count)); // Update the height value
+
+...
+
+}
 ```
 
 You'll notice that the existing bars still move instantly and that the old bars being removed just disappear as well as the axes changing instantly too. Part of your homework will be to make this happen smoothly.
