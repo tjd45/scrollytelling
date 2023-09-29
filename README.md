@@ -1,5 +1,194 @@
-# HW 3: Implement an Interactive Network
-You are going to write a visualization capable of representing node-link data. These datasets correspond to the contacts and friendship relations between students in a high school in Marseilles, France, in December 2013, as measured through several techniques.
+# HW 4: Implement a Scrollytelling Experience
+In this homework you will implement a scrolly-telling experience where a user can click through a poem and have their attention drawn to specific parts whilst having related visualisations display and animate throughout the process.
+
+## Starter Code
+You will be given a significant amount of starter code in this tutorial especially to deal with the formatting and display of the web page. When you load the tutorial starter code initially it should display a web page that looks like this:
+
+*** INSERT SCREENSHOT ***
+
+I encourage you to read over the starter code in depth and familiarise yourself with how it works. In particular spend some time playing around with the CSS file and read the comments in this file to understand how this achieves the layout that you begin with.
+
+The header of this page holds the title of the exprerience: *Roses: A Scrollytelling Experience*. The left hand, orange, panel holds the poem that we are displaying, and the right hadn dark green panel will eventually hold the visualisations that we want to associate with the poem. The footer of the page contains two buttons a forward button and a backward button. In a more complete scrollytelling experience you would want to bind the behaviour we will code to these buttons to the scrollwheel of the user, but in our example we will just work with these buttons.
+
+## Scrollytelling ##
+As you can see in the starter code we have a poem that is being displayed utilising the approach we demonstrated in the first homework using \<ul elements to represent the verses and \li elements within each \<ul> to hold the lines of the verses:
+
+```html
+<ul class="verse" id="verse1">
+            <li class="line" id="line1">Roses are red</li>
+            <li class="line" id="line2">And other colours too</li>
+            <li class="line" id="line3">But out in nature</li>
+            <li class="line" id="line4">You won't find them blue</li>
+          </ul>
+
+          <ul class="verse" id="verse2">
+            <li class="line" id="line1">Violets <em>are</em> blue</li>
+            <li class="line" id="line2">But typically purple</li>
+            <li class="line" id="line3">Unfortunately for this poem</li>
+            <li class="line" id="line4">Nothing rhymes with purple</li>
+          </ul>
+
+          <ul class="verse" id="verse3">
+            <li class="line" id="line1">Now back to roses</li>
+            <li class="line" id="line2">The classics are red</li>
+            <li class="line" id="line3">Though white are quite trendy</li>
+            <li class="line" id="line4">You can see there's quite a spread</li>
+          </ul>
+
+          <ul class="verse" id="verse4">
+            <li class="line" id="line1">Roses are red</li>
+            <li class="line" id="line2">Never really blue</li>
+            <li class="line" id="line3">Let's put these bars in order</li>
+            <li class="line" id="line4">So the graph looks nice too</li>
+          </ul>
+```
+
+One of the first steps in designing a scrollytelling experience is to decide exactly how you want to display the experience to your user. In our case we want to decide which aspects of the poem you want to highlight to draw the users attention. This can be done on multiple levels of granularity, from whole verses, to selections of lines all the way down to individual words. We will define each step of this process as a *keyframe*. In each keyframe we will want to either update the text that is the focus, or update the associated visualisation, or (oftentimes) do both at the same time.
+
+In the first part of this tutorial we are just going to focus on updating the highlighted text. In our example I would like to first highlight the whole of verse one, then the whole of verse two. After this I would like to step through each line of verses 3 and 4 in turn.
+
+To achieve this we are going to define a ```keyframes``` data structure and a ```drawKeyframes``` function.
+
+```Javascript
+let keyframes = [
+    {
+        activeVerse: 1,
+        activeLines: [1, 2, 3, 4]
+    },
+    {
+        activeVerse: 2,
+        activeLines: [1, 2, 3, 4]
+    },
+    {
+        activeVerse: 3,
+        activeLines: [1]
+    },
+    {
+        activeVerse: 3,
+        activeLines: [2]
+    },
+    {
+        activeVerse: 3,
+        activeLines: [3]
+    },
+    {
+        activeVerse: 3,
+        activeLines: [4]
+    },
+    {
+        activeVerse: 4,
+        activeLines: [1]
+    },
+    {
+        activeVerse: 4,
+        activeLines: [2]
+    },
+    {
+        activeVerse: 4,
+        activeLines: [3]
+    },
+    {
+        activeVerse: 4,
+        activeLines: [4]
+    }
+]
+```
+
+For each keyframe we define the active verse and the active lines that we would like to highlight to the user.
+
+For the ```drawKeyframe``` function we will need to call other functions that we will initally write as dummy functions which do nothing and then go and fill them in one by one.
+
+```Javascript
+// We need to define a keyframe index globally to keeep track of where we are at in the narrative flow
+let keyframeIndex = 0
+
+function drawkKeyframe(kfi){
+  // Get the current keyframe 
+  let kf = keyframes[kfi];
+
+  // Reset any lines that are currently active
+  resetActiveLines();
+
+  // Update which verse is currently being displayed as active
+  updateActiveVerse(kf.activeVerse);
+
+  // Iterate over the active lines for this keyframe and update the active lines one by one
+  for (line of kf.activeLines) {
+        updateActiveLine(kf.activeVerse, line);
+  }
+}
+
+function resetActiveLines(){
+  return
+}
+
+function updateActiveVerse(id){
+  return
+}
+
+function updateActiveLine(vid,lid){
+  return
+}
+```
+
+In order to successfully update and highlight the appropriate verses and lines we are going to want to make use of the css classes and ids we have assigned to each of the verses and lines and apply new css classes to the relevant verses/lines to indicate they are now active. We could do this using pure javascript or utilise d3's built in functionality. Today we are going to use d3.
+
+```Javascript
+function resetActiveLines() {
+  // Reset the active-line class for all of the lines
+  d3.selectAll(".line").classed("active-line", false);
+}
+
+function updateActiveVerse(id) {
+  // Reset the current active verse - in some scenarios you may want to have more than one active verse, but I will leave that as an exercise for you to figure out
+  d3.selectAll(".verse").classed("active-verse", false);
+
+  // Update the class list of the desired verse so that it now includes the class "active-verse"
+  d3.select("#verse" + id).classed("active-verse", true);
+
+}
+
+function updateActiveLine(vid, lid) {
+  // Select the correct verse
+  let thisVerse = d3.select("#verse" + vid);
+  // Update the class list of the relevant lines
+  thisVerse.select("#line" + lid).classed("active-line", true);
+}
+```
+
+This is basically all of the code that we need to kick off a very basic scrollytelling experience. All we need to do now is implement a function to detect whether the user has clicked forward or backward on the page:
+
+```Javascript
+function forwardClicked() {
+
+  // Make sure we don't let the keyframeIndex go out of range
+  if (keyframeIndex < keyframes.length - 1) {
+    keyframeIndex++;
+    drawKeyframe(keyframeIndex);
+  }
+}
+
+function backwardClicked() {
+  if (keyframeIndex > 0) {
+    keyframeIndex--;
+    drawKeyframe(keyframeIndex);
+  }
+}
+```
+
+Remember to tie these functions to the html buttons in the body of your javascript file:
+
+```Javascript
+document.getElementById("forward-button").addEventListener("click", forwardClicked);
+document.getElementById("backward-button").addEventListener("click", backwardClicked);
+```
+
+When you go and click these buttons now nothing will change visually but you should see in the inspector that the classes of the relevant verses and lines are being updated. Nowe we need to go and define some css classes so that this change in class is reflected visually:
+
+```css
+
+```
+
 
 ## Preliminary Data Files:
 * **Contact-diaries-network_data_2013.csv [5KB]:** This dataset corresponds to the directed network of contacts between students as reported in contact diaries collected at the end of the fourth day of the data collection. Each line has the form “i j w”, meaning that student i reported contacts with student j of aggregate durations of: 
