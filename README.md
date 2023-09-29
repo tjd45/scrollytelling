@@ -808,7 +808,7 @@ If you follow along with the tutorial you will be a long way to completing the a
 
 For full credit your assignment should:
 
-1. On load display the poem centred on the first verse in the left hand panel with all of these lines emphasised in some way to show that they are active.
+1. [5%] On load display the poem centred on the first verse in the left hand panel with all of these lines emphasised in some way to show that they are active.
 2. On load the rose colours distribution bar chart should be drawn.
 3. The next and previous button should update the page according to what was implemented during the tutorial. For a full breakdown of this expected behaviour see the bottom of the previous section. The only exception to this is where a subsequent step here updates the behaviour expected.
 4. Update the styling so that more cohesive colours are used. You may go as far as you like with changing the styling of the page but at a minimum you should change the backgrounds of the left panel and the right panel. You will be marked on the overall aesthetic cohesion of the page/experience.
