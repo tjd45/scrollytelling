@@ -777,7 +777,7 @@ Keyframes if you have finished the tutorial correctly
 4. Verse 3 line 2 highlighted, red bar in bar chart highlighted
 5. Verse 3 line 3 highlighted, white bar in bar chart highlighted
 6. Verse 3 line 4 highlighted, no bars highlighted
-7. Verse 4 line all ines highlighted, hovering over the 'red' bar should change the colour of the word red in the verse to red.
+7. Verse 4 all lines highlighted, hovering over the 'red' bar should change the colour of the word red in the verse to red.
 
 ## Homework Assignment
 
