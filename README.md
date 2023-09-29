@@ -200,11 +200,11 @@ This is a good start but it is a little bit clumsy. Let's start by tidying up th
 
 ```css
 .left-column-content{
-    // This forces the maximum height of the div to be equal to 100 % of the view height (the current size of the screen)
-    // the -150px is the size of the header and the footer combinedd
-    // You should be very careful when writing css like this as there are potential complications you can run into
-    // when using viewport units (vh) and you'll also need to be careful that if you update the height of the
-    // header or footer that you are sure to update the value here.
+    /* This forces the maximum height of the div to be equal to 100 % of the view height (the current size of the screen)*/
+    /* the -150px is the size of the header and the footer combinedd */
+    /* You should be very careful when writing css like this as there are potential complications you can run into */
+    /* when using viewport units (vh) and you'll also need to be careful that if you update the height of the */
+    /* header or footer that you are sure to update the value here. */
     max-height: calc(100vh - 150px);
 }
 ```
