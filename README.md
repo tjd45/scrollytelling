@@ -335,10 +335,9 @@ const width = 500;
 const height = 400;
 
 // Define the svg itself as a global variable
-let svg;
+let svg = d3.select("#svg");
 
 function initialiseSVG(){
-    let svg = d3.select("#svg");
     svg.attr("width",width);
     svg.attr("height",height);
 }
